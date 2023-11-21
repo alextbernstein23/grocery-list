@@ -36,11 +36,21 @@ const Header = (props) => {
 const Counter = (props) => {
     const [quantity, setQuantity] = useState(0) // 'quantity' is a function that holds the current state (0), setQuantity is the function we will use to update the state.
 
+    const incrementQuantity = () => {
+        console.log("Hi, from inside incrementQuantity");
+        setQuantity(quantity + 1)
+    }
+    const decrementQuantity = () => {
+        if (quantity > 0){
+            setQuantity(quantity - 1)
+        }
+    }
+
     return (
         <div className='quantity'>
             <span className='qty-label'>QTY</span>
-            <button className='increment'>+</button>
-            <button className='decrement'>-</button>
+            <button className='increment' onClick={incrementQuantity}>+</button>
+            <button className='decrement' onClick={decrementQuantity}>-</button>
             <span className='quantity-amount'>{quantity}</span>
         </div>
     )
