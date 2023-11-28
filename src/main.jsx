@@ -2,28 +2,6 @@ import { createRoot } from 'react-dom/client';
 import { StrictMode } from 'react';
 import { useState } from 'react';
 
-const items = [
-    {
-        name: "Apples",
-        quantity: 5,
-        id: 0
-    },
-    {
-        name: "Bananas",
-        quantity: 7,
-        id: 1
-    },
-    {
-        name: "Box of Pasta",
-        quantity: 1,
-        id: 2
-    },
-    {
-        name: "Cookies",
-        quantity: 12,
-        id: 3
-    }
-]
 
 const Header = (props) => {
     return (    
@@ -37,12 +15,14 @@ const Counter = (props) => {
     const [quantity, setQuantity] = useState(0) // 'quantity' is a function that holds the current state (0), setQuantity is the function we will use to update the state.
 
     const incrementQuantity = () => {
-        console.log("Hi, from inside incrementQuantity");
-        setQuantity(quantity + 1)
+        setQuantity(prevQuantity => prevQuantity + 1)
+        if (props.name == "Apples"){
+            setQuantity(prevQuantity => prevQuantity + 1)
+        }
     }
     const decrementQuantity = () => {
         if (quantity > 0){
-            setQuantity(quantity - 1)
+            setQuantity(prevQuantity => prevQuantity - 1)
         }
     }
 
@@ -58,25 +38,51 @@ const Counter = (props) => {
 const Item = (props) => {
     return (
         <div className='item'>
-            <button className='remove-item' />
+            <button className='remove-item' onClick={() => props.removeItem(props.id)} />
             <span className='item-name'>{props.itemName}</span>
-            <Counter />
+            <Counter name={props.name}/>
         </div>
     )
 }
-const App = (props) => {
+
+
+const App = () => {
+    const [items, setItems] = useState([
+        {
+            name: "Apples",
+            id: 0
+        },
+        {
+            name: "Bananas",
+            id: 1
+        },
+        {
+            name: "Box of Pasta",
+            id: 2
+        },
+        {
+            name: "Cookies",
+            id: 3
+        }
+    ])
+    const handleRemoveItem = (id) => {
+        setItems(prevItems => prevItems.filter(i => i.id !== id))
+    }
+
     return (
         <div className='grocery-list'>
             <Header 
                 title='Grocery List' 
-                itemTotal={1} 
+                itemTotal={items.length} 
             />
 
             {/* Grocery List*/}
-            {props.initialList.map(item => (
+            {items.map(item => (
                 <Item 
                     itemName={item.name} 
+                    id={item.id}
                     key={item.id}
+                    removeItem={handleRemoveItem}
                 />
             ))}
         </div>
@@ -86,6 +92,6 @@ const App = (props) => {
 const root = createRoot(document.getElementById('root'));
 root.render(
     <StrictMode>
-        <App initialList={items} />
+        <App />
     </StrictMode>
 );
